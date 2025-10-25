@@ -16,7 +16,7 @@ export const getUser = async (req: Request, res: Response) => {
 }
 
 export const getUserById = async (req: Request, res: Response) => {
-    try {
+    try {   
 
         const id = Number(req.params.id);
         const user = await userService.getUserById(id);
