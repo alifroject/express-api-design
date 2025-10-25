@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3005;
 app.use(express.json());
 
 //user
-app.use("/user", userRoutes)
+app.use(userRoutes)
 
 
 app.listen(PORT, () => {

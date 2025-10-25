@@ -1,4 +1,5 @@
 import { PrismaClient } from "../generated/prisma";
+import { createUserDto, updateUserDto } from "../schemas/userSchema";
 
 const prisma = new PrismaClient();
 
@@ -14,10 +15,19 @@ export const getUserById = async (id: number) => {
     )
 }
 
-export const createUser = async (data: { name: string, email: string }) => {
+export const createUser = async (data: createUserDto) => {
     return await prisma.user.create(
         {
             data
+        }
+    )
+}
+
+export const updateUser = async (id: number, data: updateUserDto) => {
+    return await prisma.user.update(
+        {
+            where: { id },
+            data,
         }
     )
 }
