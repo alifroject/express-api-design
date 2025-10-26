@@ -7,9 +7,15 @@ import { createProductDto, updateProdcutDto } from "../schemas/productSchema";
 
 const prisma = new PrismaClient();
 
-export const getAllProducts = async () => {
-    return await prisma.product.findMany();
+export const getAllProducts = async ({ skip, limit }: { skip: number, limit: number }) => {
+
+    const [data, total] = await Promise.all([
+        prisma.product.findMany({ skip, take: limit }),
+        prisma.product.count(),
+    ])
+    return { data, total }
 };
+
 
 export const getProductById = async (id: number) => {
     return await prisma.product.findUnique(

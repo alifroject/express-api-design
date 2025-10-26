@@ -6,8 +6,20 @@ import { updateUserShcema } from "../schemas/userSchema";
 
 export const getProduct = async (req: Request, res: Response) => {
     try {
-        const product = await productService.getAllProducts();
-        res.json(product)
+        //pagination
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+        //
+
+        const { data, total } = await productService.getAllProducts({ skip, limit });
+        res.json({
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+            data,
+        })
     } catch (error) {
         res.status(500).json({ error: "Failed to get products" });
     }
