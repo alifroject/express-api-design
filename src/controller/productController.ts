@@ -9,7 +9,16 @@ export const getProduct = async (req: Request, res: Response) => {
         const limit = Number(req.query.limit) || 10;
         const cursor = req.query.cursor ? Number(req.query.cursor) : undefined;
 
-        const { data, nextCursor } = await productService.getAllProducts({ limit, cursor });
+
+        //read filter from query string
+        const filters = {
+            category: req.query.category as string | undefined,
+            minPrice: req.query.minPrice ? Number(req.query.minPrice) : undefined,
+            maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
+        }
+
+
+        const { data, nextCursor } = await productService.getAllProducts({ limit, cursor, filters });
 
         res.json({
             limit,
