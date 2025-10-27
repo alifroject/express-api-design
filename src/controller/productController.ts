@@ -1,23 +1,19 @@
 import { Request, Response } from "express";
 import * as productService from "../service/productService"
 import { createProductSchema, UpdateProductSchema } from "../schemas/productSchema";
-import { updateUserShcema } from "../schemas/userSchema";
 
 
 export const getProduct = async (req: Request, res: Response) => {
     try {
-        //pagination
-        const page = Number(req.query.page) || 1;
+        //pagination -- with cursor
         const limit = Number(req.query.limit) || 10;
-        const skip = (page - 1) * limit;
-        //
+        const cursor = req.query.cursor ? Number(req.query.cursor) : undefined;
 
-        const { data, total } = await productService.getAllProducts({ skip, limit });
+        const { data, nextCursor } = await productService.getAllProducts({ limit, cursor });
+
         res.json({
-            page,
             limit,
-            total,
-            totalPages: Math.ceil(total / limit),
+            nextCursor,
             data,
         })
     } catch (error) {

@@ -7,13 +7,18 @@ import { createProductDto, updateProdcutDto } from "../schemas/productSchema";
 
 const prisma = new PrismaClient();
 
-export const getAllProducts = async ({ skip, limit }: { skip: number, limit: number }) => {
+export const getAllProducts = async ({ limit, cursor }: { limit: number, cursor?: number }) => {
 
-    const [data, total] = await Promise.all([
-        prisma.product.findMany({ skip, take: limit }),
-        prisma.product.count(),
-    ])
-    return { data, total }
+
+    const products = await prisma.product.findMany({
+        take: limit,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: { id: 'asc' }
+    })
+
+    const nextCursor = products.length > 0 ? products[products.length - 1].id : null; //taking last id in one batch
+
+    return {data: products, nextCursor}
 };
 
 
