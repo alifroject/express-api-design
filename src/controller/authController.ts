@@ -3,8 +3,14 @@ import * as authService from "../service/authService";
 
 export const signup = async (req: Request, res: Response) => {
     try {
-        const { name, email, password } = req.body;
-        const result = await authService.signup(name, email, password);
+        const { firstName, lastName, email, password, status } = req.body;
+        const result = await authService.signup({
+            firstName,
+            lastName,
+            email,
+            password,
+            status
+        });
         res.status(201).json(result);
     } catch (err: any) {
         res.status(400).json({ error: err.message });
