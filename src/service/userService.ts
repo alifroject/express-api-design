@@ -1,5 +1,6 @@
-import { PrismaClient } from "../generated/prisma";
-import { createUserDto, updateUserDto } from "../schemas/userSchema";
+import { PrismaClient } from "@prisma/client";
+import { CreateUserDto, UpdateUserDto } from "../schemas/userSchema";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
@@ -15,15 +16,26 @@ export const getUserById = async (id: number) => {
     )
 }
 
-export const createUser = async (data: createUserDto) => {
-    return await prisma.user.create(
-        {
-            data
+export const createUser = async (data: CreateUserDto) => {
+    const { firstName, lastName = "", email, password, status: userStatus = "active" } = data;
+
+    const hashed = await bcrypt.hash(password, 10);
+    const user = await prisma.user.create({
+        data: {
+            firstName: firstName,
+            lastName: lastName || "",
+            email: email,
+            password: hashed,
+            status: (data.status ?? "active") 
+
         }
-    )
+    });
+
+    return user;
+
 }
 
-export const updateUser = async (id: number, data: updateUserDto) => {
+export const updateUser = async (id: number, data: UpdateUserDto) => {
     return await prisma.user.update(
         {
             where: { id },

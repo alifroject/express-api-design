@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import * as userService from "../service/userService";
 
-import { createUserSchema, updateUserShcema } from "../schemas/userSchema";
+import { createUserSchema, updateUserSchema } from "../schemas/userSchema";
 
 export const getUser = async (req: Request, res: Response) => {
     try {
@@ -41,7 +41,7 @@ export const createUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
     try {
         const id = Number(req.params.id);
-        const parsed = updateUserShcema.parse(req.body)
+        const parsed = updateUserSchema.parse(req.body)
         const user = await userService.updateUser(id, parsed)
         res.json(user)
     } catch (error) {
